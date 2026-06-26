@@ -1,0 +1,1 @@
+"""Authentication profile configuration endpoints."""

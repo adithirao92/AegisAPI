@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -72,6 +72,19 @@ class NormalizedEndpoint(BaseModel):
     return_type: str | None = None
     security_schemes: list[str] = Field(default_factory=list)
     sources: list[dict[str, Any]] = Field(default_factory=list)
+    enrichment: "EndpointEnrichmentMetadata" = Field(default_factory=lambda: EndpointEnrichmentMetadata())
+
+
+class EndpointEnrichmentMetadata(BaseModel):
+    """Metadata inferred from normalized endpoints for later scanning and reporting."""
+
+    auth_required: bool = False
+    auth_type: str | None = None
+    auth_hints: list[str] = Field(default_factory=list)
+    resource_group: str | None = None
+    parameter_classification: dict[str, list[str]] = Field(default_factory=dict)
+    request_complexity: Literal["low", "medium", "high"] = "low"
+    sensitivity: Literal["low", "medium", "high"] = "low"
 
 
 class DiscoveryCatalog(BaseModel):

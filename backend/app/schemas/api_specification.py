@@ -52,8 +52,37 @@ class GraphQLOperation(BaseModel):
     fields: list[str] = Field(default_factory=list)
 
 
+class NormalizedEndpoint(BaseModel):
+    """A unified normalized entry for REST and GraphQL endpoints."""
+
+    id: str
+    endpoint_type: str
+    path: str | None = None
+    canonical_path: str | None = None
+    method: str | None = None
+    operation_type: str | None = None
+    name: str | None = None
+    canonical_name: str | None = None
+    summary: str | None = None
+    description: str | None = None
+    parameters: list[ParameterDefinition] = Field(default_factory=list)
+    arguments: list[GraphQLArgument] = Field(default_factory=list)
+    request_schema: dict[str, Any] = Field(default_factory=dict)
+    response_schema: dict[str, Any] = Field(default_factory=dict)
+    return_type: str | None = None
+    security_schemes: list[str] = Field(default_factory=list)
+    sources: list[dict[str, Any]] = Field(default_factory=list)
+
+
 class DiscoveryCatalog(BaseModel):
     """Unified catalog returned by the API discovery service."""
 
-    endpoints: list[EndpointModel] = Field(default_factory=list)
-    operations: list[GraphQLOperation] = Field(default_factory=list)
+    items: list[NormalizedEndpoint] = Field(default_factory=list)
+
+    @property
+    def endpoints(self) -> list[NormalizedEndpoint]:
+        return [item for item in self.items if item.endpoint_type == "rest"]
+
+    @property
+    def operations(self) -> list[NormalizedEndpoint]:
+        return [item for item in self.items if item.endpoint_type == "graphql"]

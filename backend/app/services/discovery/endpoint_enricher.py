@@ -13,12 +13,12 @@ from app.schemas.api_specification import (
 
 
 RESOURCE_KEYWORDS = {
-    "users": {"user", "users", "account", "accounts", "profile", "profiles"},
-    "orders": {"order", "orders", "purchase", "purchases"},
-    "products": {"product", "products", "catalog", "item", "items"},
     "admin": {"admin", "administration", "management", "manage"},
     "auth": {"auth", "login", "logout", "token", "session", "sessions", "credentials"},
     "payments": {"payment", "payments", "checkout", "invoice", "billing"},
+    "users": {"user", "users", "account", "accounts", "profile", "profiles"},
+    "orders": {"order", "orders", "purchase", "purchases"},
+    "products": {"product", "products", "catalog", "item", "items"},
     "cart": {"cart", "carts"},
 }
 

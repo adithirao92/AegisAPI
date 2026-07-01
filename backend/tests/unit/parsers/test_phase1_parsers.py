@@ -1,3 +1,5 @@
+import pytest
+
 from app.parsers.graphql.parser import parse_graphql_spec
 from app.parsers.openapi.parser import parse_openapi_spec
 
@@ -96,3 +98,30 @@ def test_graphql_parser_extracts_operations_and_arguments() -> None:
     assert operation.operation_type == "query"
     assert operation.arguments[0].name == "id"
     assert operation.return_type == "User"
+    assert operation.fields == []
+
+
+def test_openapi_parser_raises_for_unresolved_references() -> None:
+    spec = {
+        "openapi": "3.0.3",
+        "paths": {
+            "/users/{id}": {
+                "get": {
+                    "operationId": "getUser",
+                    "responses": {
+                        "200": {
+                            "description": "ok",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/MissingUser"}
+                                }
+                            },
+                        }
+                    },
+                }
+            }
+        },
+    }
+
+    with pytest.raises(ValueError, match="Unresolved OpenAPI reference"):
+        parse_openapi_spec(spec)

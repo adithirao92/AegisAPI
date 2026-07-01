@@ -32,5 +32,5 @@ class OpenAPIReferenceResolver:
             if isinstance(current, Mapping) and part in current:
                 current = current[part]
                 continue
-            return {}
+            raise ValueError(f"Unresolved OpenAPI reference: {ref}")
         return current

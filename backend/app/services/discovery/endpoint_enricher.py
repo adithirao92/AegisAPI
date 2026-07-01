@@ -80,9 +80,11 @@ def _flatten_schema(schema: Any) -> list[dict[str, Any]]:
 def _schema_depth(schema: Any, depth: int = 0) -> int:
     if not isinstance(schema, dict) or not schema:
         return depth
+
     nested = [value for value in schema.values() if isinstance(value, dict)]
     if not nested:
         return depth
+
     return max(_schema_depth(value, depth + 1) for value in nested)
 
 

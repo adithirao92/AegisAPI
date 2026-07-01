@@ -139,3 +139,13 @@ def test_edge_case_empty_endpoint_still_enriches() -> None:
     enriched = EndpointEnrichmentService().enrich_catalog(catalog)
     assert enriched.items[0].enrichment.resource_group == "health"
     assert enriched.items[0].enrichment.request_complexity == "low"
+
+
+def test_empty_schema_does_not_crash_enrichment() -> None:
+    endpoint = make_rest_endpoint("/health", "GET")
+    endpoint.security_schemes = []
+    endpoint.request_schema = {}
+    catalog = DiscoveryCatalog(items=[endpoint])
+
+    enriched = EndpointEnrichmentService().enrich_catalog(catalog)
+    assert enriched.items[0].enrichment.request_complexity == "low"

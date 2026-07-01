@@ -35,7 +35,7 @@ def parse_graphql_spec(spec: Any) -> list[GraphQLOperation]:
                 description=str(operation.get("description") or ""),
                 arguments=arguments,
                 return_type=str(operation.get("return_type") or ""),
-                fields=["id"] if operation.get("name") == "user" else [],
+                fields=[],
             )
         )
     return operations

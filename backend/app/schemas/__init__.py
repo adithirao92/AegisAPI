@@ -9,6 +9,7 @@ from app.schemas.api_specification import (
 )
 from app.schemas.auth import (
     ApiKeyCredentialMetadata,
+    AuthenticationContext,
     AuthenticationProfile,
     AuthenticationType,
     AuthenticationValidationResult,
@@ -22,6 +23,7 @@ from app.schemas.auth import (
 
 __all__ = [
     "ApiKeyCredentialMetadata",
+    "AuthenticationContext",
     "AuthenticationProfile",
     "AuthenticationType",
     "AuthenticationValidationResult",

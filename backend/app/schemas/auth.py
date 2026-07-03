@@ -43,6 +43,7 @@ class ApiKeyCredentialMetadata(CredentialMetadataBase):
 
     key_name: str = Field(..., min_length=1)
     location: Literal["header", "query", "cookie"] = "header"
+    value: str | None = None
     prefix: str | None = None
 
 
@@ -51,6 +52,7 @@ class BearerTokenCredentialMetadata(CredentialMetadataBase):
 
     header_name: str = Field(default="Authorization", min_length=1)
     prefix: str = Field(default="Bearer", min_length=1)
+    token: str | None = None
 
 
 class JwtCredentialMetadata(CredentialMetadataBase):
@@ -61,6 +63,7 @@ class JwtCredentialMetadata(CredentialMetadataBase):
     issuer: str | None = None
     audience: str | None = None
     claim_name: str = Field(default="sub", min_length=1)
+    token: str | None = None
 
 
 class BasicAuthCredentialMetadata(CredentialMetadataBase):
@@ -68,6 +71,8 @@ class BasicAuthCredentialMetadata(CredentialMetadataBase):
 
     username_field: str = Field(default="username", min_length=1)
     password_field: str = Field(default="password", min_length=1)
+    username: str | None = None
+    password: str | None = None
 
 
 class OAuth2CredentialMetadata(CredentialMetadataBase):
@@ -77,6 +82,8 @@ class OAuth2CredentialMetadata(CredentialMetadataBase):
     authorization_url: str | None = None
     scopes: list[str] = Field(default_factory=list)
     grant_type: str = Field(default="client_credentials", min_length=1)
+    access_token: str | None = None
+    refresh_token: str | None = None
 
 
 CredentialMetadata = (
@@ -125,3 +132,25 @@ class AuthenticationValidationResult(BaseModel):
     profile_id: str | None = None
     error_code: str | None = None
     details: dict[str, Any] = Field(default_factory=dict)
+
+
+class AuthenticationContext(BaseModel):
+    """Context object for downstream scan execution and request injection."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    endpoint_id: str
+    authentication_type: AuthenticationType
+    profile_id: str | None = None
+    validation_status: AuthenticationValidationStatus = AuthenticationValidationStatus.PENDING
+    credential_metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class RequestAuthenticationData(BaseModel):
+    """Authentication data attached to an outgoing request."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    headers: dict[str, str] = Field(default_factory=dict)
+    query_params: dict[str, str] = Field(default_factory=dict)
+    cookies: dict[str, str] = Field(default_factory=dict)

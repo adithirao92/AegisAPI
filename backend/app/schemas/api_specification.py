@@ -99,3 +99,17 @@ class DiscoveryCatalog(BaseModel):
     @property
     def operations(self) -> list[NormalizedEndpoint]:
         return [item for item in self.items if item.endpoint_type == "graphql"]
+
+
+class DiscoveryRequest(BaseModel):
+    """Single API specification source submitted to the discovery endpoint."""
+
+    content: str | None = None
+    source_url: str | None = None
+    filename: str | None = None
+    format_hint: Literal[
+        "openapi_json",
+        "openapi_yaml",
+        "graphql_sdl",
+        "graphql_introspection",
+    ] | None = None

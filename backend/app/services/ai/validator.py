@@ -21,7 +21,8 @@ class AttackPlanValidator:
     ) -> ValidationResult:
         """Validate a candidate without repairing hallucinated values."""
         try:
-            parsed_plan = plan if isinstance(plan, AttackPlan) else AttackPlan.model_validate(plan)
+            raw_plan = plan.model_dump() if isinstance(plan, AttackPlan) else plan
+            parsed_plan = AttackPlan.model_validate(raw_plan)
         except ValidationError as exc:
             return ValidationResult(errors=[f"Invalid attack plan: {error['msg']}" for error in exc.errors()])
 
